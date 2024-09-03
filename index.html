@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<script async src="https://www.googletagmanager.com/gtag/js?id=G-5899C1DJM0"></script>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -213,8 +212,8 @@
 					border-radius: 0;
 					background: #999;
 					border: none;
-					padding: 0;
 					color: #fefefe;
+					word-break: keep-all;
 
 					display: flex;
 					align-items: center;
@@ -243,28 +242,12 @@
 				input[type=number] {
 					box-sizing: border-box;
 					text-align: center;
+					width: 80px;
 				}
 			}
 		}
 
-		#donate {
-			position: fixed;
-			bottom: calc(160px + 1.5rem);
-			left: 1rem;
-			z-index: 999;
-			visibility: visible;
-			opacity: 1;
-			transition: visibility 0s, opacity 1s linear;
-			&.hide {
-				opacity: 0;
-				visibility: hidden;
-			}
-		}
-
 		@media screen and (max-width: 750px) {
-			#donate {
-				bottom: 1rem;
-			}
 			#settings {
 				bottom: calc(1.5rem + 60px);
 				display: block;
@@ -304,11 +287,6 @@
 <body>
 <script type="module" src="./src/index.ts"></script>
 <script type="text/javascript">
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-5899C1DJM0');
-
 	function getNames() {
 		const value = document.querySelector('#in_names').value.trim();
 		return value.split(/[,\r\n]/g).map(v => v.trim()).filter(v => !!v);
@@ -425,14 +403,8 @@
 
 		document.querySelector('#btnStart').addEventListener('click', () => {
 			if (!ready) return;
-			gtag && gtag('event', 'start', {
-				'event_category': 'roulette',
-				'event_label': 'start',
-				'value': window.roullete.getCount(),
-			});
 			window.roullete.start();
 			document.querySelector('#settings').classList.add('hide');
-			document.querySelector('#donate').classList.add('hide');
 		});
 
 		document.querySelector('#chkAutoRecording').addEventListener('change', (e) => {
@@ -463,18 +435,12 @@
 
 		document.querySelector('#btnShake').addEventListener('click', () => {
 			window.roullete.shake();
-			gtag('event', 'shake', {
-				'event_category': 'roulette',
-				'event_label': 'shake',
-				'value': 1,
-			});
 		});
 
 		window.roullete.addEventListener('goal', () => {
 			ready = false;
 			setTimeout(() => {
 				document.querySelector('#settings').classList.remove('hide');
-				document.querySelector('#donate').classList.remove('hide');
 			}, 3000);
 		});
 		window.roullete.addEventListener('shakeAvailableChanged', (e) => {
@@ -497,18 +463,6 @@
 			const index = e.target.value;
 			window.roullete.setMap(index);
 		});
-
-		const checkDonateButtonLoaded = () => {
-			const btn = document.querySelector('span.bmc-btn-text');
-			if (!btn) {
-				setTimeout(checkDonateButtonLoaded, 100);
-			} else {
-				console.log('donation button has been loaded');
-				btn.setAttribute('data-trans', '');
-				window.translateElement(btn);
-			}
-		};
-		setTimeout(checkDonateButtonLoaded, 100);
 	}
 </script>
 <div id="settings" class="settings">
@@ -561,14 +515,9 @@
 		</div>
 	</div>
 </div>
-<div id="donate">
-	<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js"
-			data-name="bmc-button" data-slug="lazygyu" data-color="#FFDD00" data-emoji=""
-			data-font="Comic" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
-</div>
 <div id="inGame" class="settings hide">
 	<button id="btnShake" data-trans>Shake!</button>
 </div>
-<div class="copyright">&copy; 2024.<a href="https://lazygyu.net" target="_blank">lazygyu</a></div>
+<div class="copyright">&copy; 2024.<a href="https://lazygyu.net" target="_blank">lazygyu</a> · <a href="https://bj.afreecatv.com/jebibot2" target="_blank">아르고</a></div>
 </body>
 </html>

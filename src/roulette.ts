@@ -2,7 +2,7 @@ import {Marble} from './marble';
 import {initialZoom, Skills, zoomThreshold} from './data/constants';
 import {ParticleManager} from './particleManager';
 import {StageDef, stages} from './data/maps';
-import {parseName} from './utils/utils';
+import {pad, parseName} from './utils/utils';
 import {Camera} from './camera';
 import {RouletteRenderer} from './rouletteRenderer';
 import {SkillEffect} from './skillEffect';
@@ -138,12 +138,14 @@ export class Roulette extends EventTarget {
                     this._winner = marble;
                     this._isRunning = false;
                     this._particleManager.shot(this._renderer.width, this._renderer.height);
+                    this._downloadResult();
                     setTimeout(() => { this._recorder.stop(); }, 1000);
                 } else if (this._isRunning && this._winnerRank === this._winners.length && this._winnerRank === this._totalMarbleCount - 1) {
                     this.dispatchEvent(new CustomEvent('goal', {detail: {winner: this._marbles[i + 1].name}}));
                     this._winner = this._marbles[i+1];
                     this._isRunning = false;
                     this._particleManager.shot(this._renderer.width, this._renderer.height);
+                    this._downloadResult();
                     setTimeout(() => { this._recorder.stop(); }, 1000);
                 }
                 setTimeout(() => {
@@ -158,6 +160,18 @@ export class Roulette extends EventTarget {
         this._timeScale = this._calcTimeScale();
 
         this._marbles = this._marbles.filter(marble => marble.y <= this._stage!.goalY);
+    }
+
+    private _downloadResult() {
+        const result = this._winners.map(winner => winner.name);
+        const blob = new Blob([result.join('\n')], {type: 'text/plain'});
+        const url = URL.createObjectURL(blob);
+        const d = new Date();
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `marble_roulette_${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
     }
 
     private _calcTimeScale(): number {
