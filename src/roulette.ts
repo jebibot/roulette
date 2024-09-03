@@ -145,7 +145,7 @@ export class Roulette extends EventTarget {
                     this._winner = this._marbles[i+1];
                     this._isRunning = false;
                     this._particleManager.shot(this._renderer.width, this._renderer.height);
-                    this._downloadResult();
+                    this._downloadResult(true);
                     setTimeout(() => { this._recorder.stop(); }, 1000);
                 }
                 setTimeout(() => {
@@ -162,8 +162,11 @@ export class Roulette extends EventTarget {
         this._marbles = this._marbles.filter(marble => marble.y <= this._stage!.goalY);
     }
 
-    private _downloadResult() {
+    private _downloadResult(isLast: boolean = false) {
         const result = this._winners.map(winner => winner.name);
+        if (isLast) {
+            result.push(this._winner!.name);
+        }
         const blob = new Blob([result.join('\n')], {type: 'text/plain'});
         const url = URL.createObjectURL(blob);
         const d = new Date();
